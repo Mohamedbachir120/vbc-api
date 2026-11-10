@@ -21,7 +21,17 @@ class User extends Model
         'name',
         'email',
         'password',
+        'role',
     ];
+
+    protected $attributes = [
+        'role' => 'commercial',
+    ];
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 
     // Never leak the password hash in API responses.
     protected $hidden = [

@@ -71,6 +71,37 @@ class Validator
         return $this;
     }
 
+    public function in(string $field, array $allowed, string $label): self
+    {
+        if (isset($this->data[$field]) && $this->data[$field] !== '' && !in_array($this->data[$field], $allowed, true)) {
+            $this->errors[$field] = "$label must be one of: " . implode(', ', $allowed);
+        }
+
+        return $this;
+    }
+
+    public function integer(string $field, string $label): self
+    {
+        if (isset($this->data[$field]) && $this->data[$field] !== '' && !is_numeric($this->data[$field])) {
+            $this->errors[$field] = "$label must be a number";
+        }
+
+        return $this;
+    }
+
+    public function dateTime(string $field, string $label): self
+    {
+        if (isset($this->data[$field]) && $this->data[$field] !== '') {
+            try {
+                new \DateTimeImmutable((string) $this->data[$field]);
+            } catch (\Exception) {
+                $this->errors[$field] = "$label must be a valid date/time";
+            }
+        }
+
+        return $this;
+    }
+
     public function fails(): bool
     {
         return count($this->errors) > 0;

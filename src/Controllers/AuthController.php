@@ -44,6 +44,7 @@ class AuthController
                 'id'    => $user->id,
                 'name'  => $user->name,
                 'email' => $user->email,
+                'role'  => $user->role,
             ],
             'token' => $token,
         ], 201);
@@ -71,6 +72,7 @@ class AuthController
                 'id'    => $user->id,
                 'name'  => $user->name,
                 'email' => $user->email,
+                'role'  => $user->role,
             ],
             'token' => $token,
         ], 200);
@@ -90,6 +92,7 @@ class AuthController
             'id'        => $user->id,
             'name'      => $user->name,
             'email'     => $user->email,
+            'role'      => $user->role,
             'createdAt' => $user->created_at?->toIso8601String(),
             'updatedAt' => $user->updated_at?->toIso8601String(),
         ]);
