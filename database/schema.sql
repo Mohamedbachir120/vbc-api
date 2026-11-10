@@ -1,0 +1,48 @@
+-- database/schema.sql
+-- MySQL schema mirroring prisma/schema.prisma (Postgres) for the Virtual Business Card API
+
+CREATE DATABASE IF NOT EXISTS virtual_business_card
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+USE virtual_business_card;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS cards (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  uuid CHAR(36) NOT NULL UNIQUE,
+  name VARCHAR(255) NOT NULL,
+  role VARCHAR(255) NULL,
+  company VARCHAR(255) NULL,
+  website VARCHAR(255) NULL,
+  email VARCHAR(255) NULL,
+  phone VARCHAR(255) NULL,
+  location VARCHAR(255) NULL,
+  accent VARCHAR(7) NOT NULL DEFAULT '#6366f1',
+  accent_light VARCHAR(7) NOT NULL DEFAULT '#e0e7ff',
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  user_id INT UNSIGNED NOT NULL,
+  CONSTRAINT fk_cards_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_cards_user_id (user_id),
+  INDEX idx_cards_uuid (uuid)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS card_views (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  ip VARCHAR(45) NULL,
+  user_agent VARCHAR(512) NULL,
+  viewed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  card_id INT UNSIGNED NOT NULL,
+  CONSTRAINT fk_card_views_card FOREIGN KEY (card_id) REFERENCES cards(id) ON DELETE CASCADE,
+  INDEX idx_card_views_card_id (card_id),
+  INDEX idx_card_views_viewed_at (viewed_at)
+) ENGINE=InnoDB;
