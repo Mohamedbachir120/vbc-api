@@ -1,0 +1,15 @@
+# Slim routes everything through index.php (there's no real file at
+# /api/auth/login, /health, etc.), so Apache must be told to serve index.php
+# for any request that isn't an actual file in this folder.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Pass the real Authorization header through to PHP — some Apache/FastCGI
+  # setups otherwise strip it, which would break every authenticated route.
+  RewriteCond %{HTTP:Authorization} .
+  RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.php [QSA,L]
+</IfModule>
